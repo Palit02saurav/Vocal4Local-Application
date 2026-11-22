@@ -1,0 +1,79 @@
+const sequelize = require('../config/database');
+const Admin = require('./Admin');
+const Seller = require('./Seller');
+const Vendor = require('./Vendor');
+const Product = require('./Product');
+const ProductEditRequest = require('./Producteditrequest');
+const Category = require('./Category');
+const Service = require('./Service');
+const Banner = require('./Banner');
+const Coupon = require('./Coupon');
+const Customer = require('./Customer');
+const CartItem = require('./CartItem');
+const WishlistItem = require('./WishlistItem');
+const Order = require('./Order');
+const OrderItem = require('./OrderItem');
+const Notification = require('./Notification');
+const Mail = require('./Mail');
+const Review = require('./Review');
+const SellerPayoutAccount = require('./SellerPayoutAccount');
+const ReturnRequest = require('./ReturnRequest');
+const GeoState = require('./GeoState');
+const GeoDistrict = require('./GeoDistrict');
+
+GeoDistrict.belongsTo(GeoState, { foreignKey: 'state_id', as: 'state' });
+GeoState.hasMany(GeoDistrict, { foreignKey: 'state_id', as: 'districts' });
+
+Service.belongsTo(Seller, { foreignKey: 'seller_id', as: 'seller' });
+Review.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+Review.belongsTo(Service, { foreignKey: 'service_id', as: 'service' });
+Review.belongsTo(OrderItem, { foreignKey: 'order_item_id', as: 'orderItem' });
+Product.hasMany(Review, { foreignKey: 'product_id', as: 'reviews' });
+OrderItem.hasOne(Review, { foreignKey: 'order_item_id', as: 'review' });
+Banner.belongsTo(Seller, { foreignKey: 'seller_id', as: 'seller' });
+Banner.belongsTo(Vendor, { foreignKey: 'vendor_id', as: 'vendor' });
+Coupon.belongsTo(Seller, { foreignKey: 'seller_id', as: 'seller' });
+SellerPayoutAccount.belongsTo(Seller, { foreignKey: 'seller_id', as: 'seller' });
+SellerPayoutAccount.belongsTo(Vendor, { foreignKey: 'vendor_id', as: 'vendor' });
+Order.belongsTo(Customer, { foreignKey: 'customer_id', as: 'customer' });
+CartItem.belongsTo(Customer, { foreignKey: 'customer_id', as: 'customer' });
+CartItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+CartItem.belongsTo(Service, { foreignKey: 'service_id', as: 'service' });
+
+WishlistItem.belongsTo(Customer, { foreignKey: 'customer_id', as: 'customer' });
+WishlistItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+WishlistItem.belongsTo(Service, { foreignKey: 'service_id', as: 'service' });
+
+Order.hasMany(OrderItem, { foreignKey: 'order_id', as: 'items' });
+OrderItem.belongsTo(Order, { foreignKey: 'order_id', as: 'order' });
+OrderItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+OrderItem.belongsTo(Service, { foreignKey: 'service_id', as: 'service' });
+OrderItem.hasOne(ReturnRequest, { foreignKey: 'order_item_id', as: 'returnRequest' });
+ReturnRequest.belongsTo(OrderItem, { foreignKey: 'order_item_id', as: 'orderItem' });
+ReturnRequest.belongsTo(Order, { foreignKey: 'order_id', as: 'order' });
+ReturnRequest.belongsTo(Customer, { foreignKey: 'customer_id', as: 'customer' });
+
+module.exports = {
+  sequelize,
+  Admin,
+  Seller,
+  Vendor,
+  Product,
+  Producteditrequest: ProductEditRequest,
+  Category,
+  Service,
+  Banner,
+  Coupon,
+  Customer,
+  CartItem,
+  WishlistItem,
+  Order,
+  OrderItem,
+  Notification,
+  Mail,
+  Review,
+  SellerPayoutAccount,
+  ReturnRequest,
+  GeoState,
+  GeoDistrict,
+};
